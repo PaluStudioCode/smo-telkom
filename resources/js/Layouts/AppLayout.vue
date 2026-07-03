@@ -22,19 +22,22 @@ const pageTitle = computed(() => props.title);
 
     <div class="min-h-screen bg-background text-foreground">
         <aside
-            class="fixed inset-y-0 left-0 z-40 hidden border-r border-border bg-surface transition-all lg:block"
+            class="fixed inset-y-0 left-0 z-40 hidden transition-all lg:block bg-telkom-red"
             :class="collapsed ? 'w-20' : 'w-72'"
         >
-            <div class="flex h-16 items-center border-b border-border px-4">
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-panel bg-telkom-red text-sm font-bold text-white">
-                    SMO
-                </div>
-                <div v-if="!collapsed" class="ml-3 min-w-0">
-                    <p class="truncate text-sm font-semibold text-telkom-black">Sistem Monitoring</p>
-                    <p class="truncate text-xs text-content-muted">Government Service</p>
+            <div class="flex h-16 items-center border-b border-white/20 px-4 overflow-hidden">
+                <img 
+                    src="/storage/telkom-indonesia-logo.svg" 
+                    alt="Telkom Indonesia" 
+                    class="h-7 shrink-0 object-contain filter brightness-0 invert" 
+                    :class="collapsed ? 'w-10' : 'w-auto'"
+                />
+                <div v-if="!collapsed" class="ml-3 min-w-0 border-l border-white/20 pl-3">
+                    <p class="truncate text-sm font-semibold text-white">Sistem Monitoring</p>
+                    <p class="truncate text-xs text-white/70">Government Service</p>
                 </div>
             </div>
-            <div class="h-[calc(100vh-4rem)] overflow-y-auto p-3">
+            <div class="h-[calc(100vh-4rem)] overflow-y-auto p-3 text-white">
                 <SidebarNav :collapsed="collapsed" />
             </div>
         </aside>
@@ -47,17 +50,19 @@ const pageTitle = computed(() => props.title);
                     aria-label="Tutup navigasi"
                     @click="mobileOpen = false"
                 />
-                <aside class="relative h-full w-80 max-w-[85vw] border-r border-border bg-surface shadow-panel">
-                    <div class="flex h-16 items-center border-b border-border px-4">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-panel bg-telkom-red text-sm font-bold text-white">
-                            SMO
-                        </div>
-                        <div class="ml-3 min-w-0">
-                            <p class="truncate text-sm font-semibold text-telkom-black">Sistem Monitoring</p>
-                            <p class="truncate text-xs text-content-muted">Government Service</p>
+                <aside class="relative h-full w-80 max-w-[85vw] bg-telkom-red shadow-panel">
+                    <div class="flex h-16 items-center border-b border-white/20 px-4 overflow-hidden">
+                        <img 
+                            src="/storage/telkom-indonesia-logo.svg" 
+                            alt="Telkom Indonesia" 
+                            class="h-7 w-auto shrink-0 object-contain filter brightness-0 invert" 
+                        />
+                        <div class="ml-3 min-w-0 border-l border-white/20 pl-3">
+                            <p class="truncate text-sm font-semibold text-white">Sistem Monitoring</p>
+                            <p class="truncate text-xs text-white/70">Government Service</p>
                         </div>
                     </div>
-                    <div class="h-[calc(100vh-4rem)] overflow-y-auto p-3">
+                    <div class="h-[calc(100vh-4rem)] overflow-y-auto p-3 text-white">
                         <SidebarNav @navigate="mobileOpen = false" />
                     </div>
                 </aside>

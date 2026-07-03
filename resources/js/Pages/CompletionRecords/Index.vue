@@ -2,6 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import ConfirmDialog from '@/Components/ConfirmDialog.vue';
 import DataTable from '@/Components/DataTable.vue';
+import Dropdown from '@/Components/Dropdown.vue';
 import FilterBar from '@/Components/FilterBar.vue';
 import FormError from '@/Components/FormError.vue';
 import Modal from '@/Components/Modal.vue';
@@ -10,7 +11,7 @@ import StatCard from '@/Components/StatCard.vue';
 import StatusBadge from '@/Components/StatusBadge.vue';
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
-import { Check, CheckCircle, Pencil, Plus, RotateCcw, Trash2, X } from 'lucide-vue-next';
+import { Check, CheckCircle, Pencil, Plus, RotateCcw, Trash2, X, Eye, MoreHorizontal } from 'lucide-vue-next';
 
 const props = defineProps({
     completionRecords: {
@@ -72,6 +73,19 @@ const approvalState = ref({
 const filterForm = ref({ ...props.filters });
 let filterTimer = null;
 
+const showDetailModal = ref(false);
+const detailRecord = ref(null);
+
+const openDetail = (record) => {
+    detailRecord.value = record;
+    showDetailModal.value = true;
+};
+
+const closeDetail = () => {
+    showDetailModal.value = false;
+    detailRecord.value = null;
+};
+
 const currentMonth = () => {
     const date = new Date();
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -101,12 +115,8 @@ const approvalForm = useForm({
 const columns = [
     { key: 'completion_number', label: 'Nomor Complete', sortable: true },
     { key: 'inputer_name', label: 'Inputer' },
-    { key: 'account_manager_name', label: 'Account Manager' },
-    { key: 'approval_status', label: 'Status Persetujuan', sortable: true },
-    { key: 'completed_at', label: 'Tanggal Complete', sortable: true },
-    { key: 'revision_note', label: 'Catatan Revisi', class: 'max-w-xs whitespace-normal' },
-    { key: 'period_month', label: 'Periode', sortable: true },
-    { key: 'updated_at', label: 'Update Terakhir', sortable: true },
+    { key: 'account_manager_name', label: 'AM' },
+    { key: 'approval_status', label: 'Status', sortable: true },
     { key: 'actions', label: 'Aksi', headerClass: 'text-right', class: 'text-right' },
 ];
 
@@ -364,64 +374,75 @@ const submitApproval = () => {
             <template #cell-approval_status="{ row }">
                 <StatusBadge :variant="row.approval_status_tone">{{ row.approval_status_label }}</StatusBadge>
             </template>
-            <template #cell-completed_at="{ row }">
-                {{ row.completed_at || '-' }}
-            </template>
-            <template #cell-revision_note="{ row }">
-                {{ row.revision_note || '-' }}
-            </template>
             <template #cell-actions="{ row }">
-                <div v-if="canUpdate || canDelete || canApprove" class="flex justify-end gap-1">
-                    <button
-                        v-if="canUpdate"
-                        type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-content-secondary hover:bg-telkom-grey-soft hover:text-telkom-black"
-                        aria-label="Ubah data complete"
-                        @click="openEdit(row)"
-                    >
-                        <Pencil class="h-4 w-4" />
-                    </button>
-                    <button
-                        v-if="canApprove"
-                        type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-status-success hover:bg-status-success-soft"
-                        aria-label="Setujui"
-                        title="Setujui"
-                        @click="openApproval(row, 'disetujui')"
-                    >
-                        <Check class="h-4 w-4" />
-                    </button>
-                    <button
-                        v-if="canApprove"
-                        type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-status-danger hover:bg-status-danger-soft"
-                        aria-label="Tolak"
-                        title="Tolak"
-                        @click="openApproval(row, 'tidak_disetujui')"
-                    >
-                        <X class="h-4 w-4" />
-                    </button>
-                    <button
-                        v-if="canApprove"
-                        type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-status-warning hover:bg-status-warning-soft"
-                        aria-label="Minta revisi"
-                        title="Minta revisi"
-                        @click="openApproval(row, 'revisi')"
-                    >
-                        <RotateCcw class="h-4 w-4" />
-                    </button>
-                    <button
-                        v-if="canDelete"
-                        type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-status-danger hover:bg-status-danger-soft"
-                        aria-label="Hapus data complete"
-                        @click="askDelete(row)"
-                    >
-                        <Trash2 class="h-4 w-4" />
-                    </button>
+                <div class="flex justify-end">
+                    <Dropdown align="right" width="48">
+                        <template #trigger>
+                            <button
+                                type="button"
+                                class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-content-secondary hover:bg-telkom-grey-soft hover:text-telkom-black"
+                                aria-label="Menu aksi"
+                            >
+                                <MoreHorizontal class="h-5 w-5" />
+                            </button>
+                        </template>
+                        <template #content>
+                            <button
+                                type="button"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black hover:bg-telkom-grey-soft"
+                                @click="openDetail(row)"
+                            >
+                                <Eye class="h-4 w-4 text-content-muted" />
+                                Lihat Detail
+                            </button>
+                            <button
+                                v-if="canUpdate"
+                                type="button"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black hover:bg-telkom-grey-soft"
+                                @click="openEdit(row)"
+                            >
+                                <Pencil class="h-4 w-4 text-content-muted" />
+                                Ubah Data
+                            </button>
+                            <button
+                                v-if="canApprove"
+                                type="button"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black hover:bg-telkom-grey-soft"
+                                @click="openApproval(row, 'disetujui')"
+                            >
+                                <Check class="h-4 w-4 text-status-success" />
+                                Setujui
+                            </button>
+                            <button
+                                v-if="canApprove"
+                                type="button"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black hover:bg-telkom-grey-soft"
+                                @click="openApproval(row, 'tidak_disetujui')"
+                            >
+                                <X class="h-4 w-4 text-status-danger" />
+                                Tolak
+                            </button>
+                            <button
+                                v-if="canApprove"
+                                type="button"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black hover:bg-telkom-grey-soft"
+                                @click="openApproval(row, 'revisi')"
+                            >
+                                <RotateCcw class="h-4 w-4 text-status-warning" />
+                                Minta Revisi
+                            </button>
+                            <button
+                                v-if="canDelete"
+                                type="button"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-status-danger hover:bg-status-danger-soft"
+                                @click="askDelete(row)"
+                            >
+                                <Trash2 class="h-4 w-4" />
+                                Hapus
+                            </button>
+                        </template>
+                    </Dropdown>
                 </div>
-                <span v-else>-</span>
             </template>
         </DataTable>
 
@@ -551,5 +572,57 @@ const submitApproval = () => {
             @close="closeConfirm"
             @confirm="confirmDelete"
         />
+
+        <Modal :show="showDetailModal" max-width="md" @close="closeDetail">
+            <div class="p-6">
+                <div class="border-b border-border pb-4 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-telkom-black">Detail Complete</h2>
+                    <button type="button" @click="closeDetail" class="text-content-secondary hover:text-telkom-black">
+                        <X class="h-5 w-5" />
+                    </button>
+                </div>
+                <div v-if="detailRecord" class="mt-5 space-y-4 text-sm">
+                    <div class="grid grid-cols-2">
+                        <span class="font-medium text-content-secondary">Nomor Complete</span>
+                        <span class="text-telkom-black font-semibold">{{ detailRecord.completion_number }}</span>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <span class="font-medium text-content-secondary">Inputer</span>
+                        <span class="text-telkom-black">{{ detailRecord.inputer_name }}</span>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <span class="font-medium text-content-secondary">Account Manager</span>
+                        <span class="text-telkom-black">{{ detailRecord.account_manager_name }}</span>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <span class="font-medium text-content-secondary">Status Persetujuan</span>
+                        <div>
+                            <StatusBadge :variant="detailRecord.approval_status_tone">{{ detailRecord.approval_status_label }}</StatusBadge>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <span class="font-medium text-content-secondary">Tanggal Complete</span>
+                        <span class="text-telkom-black">{{ detailRecord.completed_at || '-' }}</span>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <span class="font-medium text-content-secondary">Periode</span>
+                        <span class="text-telkom-black">{{ detailRecord.period_month }}</span>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <span class="font-medium text-content-secondary">Catatan Revisi</span>
+                        <span class="text-telkom-black">{{ detailRecord.revision_note || '-' }}</span>
+                    </div>
+                    <div class="grid grid-cols-2">
+                        <span class="font-medium text-content-secondary">Update Terakhir</span>
+                        <span class="text-telkom-black">{{ detailRecord.updated_at }}</span>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end">
+                    <button type="button" class="h-10 rounded-panel bg-telkom-grey-soft px-4 text-sm font-medium text-telkom-black hover:bg-gray-200" @click="closeDetail">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </Modal>
     </AppLayout>
 </template>

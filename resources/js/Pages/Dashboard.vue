@@ -164,7 +164,7 @@ const totalLabel = (items) => items.reduce((sum, item) => sum + Number(item.valu
         </div>
 
         <section class="grid gap-4 xl:grid-cols-2">
-            <div class="rounded-panel border border-border bg-surface p-5 shadow-soft">
+            <div class="h-fit rounded-panel border border-border bg-surface p-5 shadow-soft">
                 <div class="flex items-center justify-between gap-3">
                     <div>
                         <h2 class="text-base font-semibold text-telkom-black">Komposisi Status Operasional</h2>
@@ -173,7 +173,7 @@ const totalLabel = (items) => items.reduce((sum, item) => sum + Number(item.valu
                     <Donut class="h-5 w-5 text-content-muted" />
                 </div>
 
-                <div v-if="statusTotal > 0" class="mt-6 grid gap-6 md:grid-cols-[220px_1fr] md:items-center">
+                <div v-if="statusTotal > 0" class="mt-6 flex flex-col gap-6">
                     <div class="relative mx-auto h-52 w-52">
                         <svg class="h-full w-full" viewBox="0 0 120 120" role="img" aria-label="Komposisi status operasional">
                             <circle
@@ -207,7 +207,7 @@ const totalLabel = (items) => items.reduce((sum, item) => sum + Number(item.valu
                         </div>
                     </div>
 
-                    <div class="grid gap-2 sm:grid-cols-2">
+                    <div class="grid max-h-52 gap-2 overflow-y-auto sm:grid-cols-2">
                         <div
                             v-for="item in statusItems"
                             :key="item.key"
@@ -233,7 +233,7 @@ const totalLabel = (items) => items.reduce((sum, item) => sum + Number(item.valu
                 </div>
             </div>
 
-            <div class="grid gap-4">
+            <div class="grid h-fit gap-4">
                 <div
                     v-for="chart in charts.barCharts"
                     :key="chart.key"
@@ -247,7 +247,7 @@ const totalLabel = (items) => items.reduce((sum, item) => sum + Number(item.valu
                         <BarChart3 class="h-5 w-5 text-content-muted" />
                     </div>
 
-                    <div v-if="hasBarData(chart.items)" class="mt-5 space-y-3">
+                    <div v-if="hasBarData(chart.items)" class="mt-5 max-h-64 space-y-3 overflow-y-auto pr-1">
                         <div v-for="item in chart.items" :key="item.label" class="grid gap-2">
                             <div class="flex items-center justify-between gap-3 text-sm">
                                 <span class="truncate font-medium text-telkom-black">{{ item.label }}</span>
@@ -276,9 +276,9 @@ const totalLabel = (items) => items.reduce((sum, item) => sum + Number(item.valu
                 <div class="border-b border-border px-4 py-3">
                     <h2 class="text-base font-semibold text-telkom-black">Tabel Rekap Inputer</h2>
                 </div>
-                <div class="overflow-x-auto">
+                <div class="max-h-80 overflow-auto">
                     <table class="min-w-full divide-y divide-border text-sm">
-                        <thead class="bg-telkom-grey-soft text-left text-xs font-semibold uppercase text-content-secondary">
+                        <thead class="sticky top-0 z-10 bg-telkom-red text-left text-xs font-semibold uppercase text-white">
                             <tr>
                                 <th class="whitespace-nowrap px-4 py-3">Nama</th>
                                 <th class="whitespace-nowrap px-4 py-3">Order</th>
@@ -308,9 +308,9 @@ const totalLabel = (items) => items.reduce((sum, item) => sum + Number(item.valu
                 <div class="border-b border-border px-4 py-3">
                     <h2 class="text-base font-semibold text-telkom-black">Tabel Rekap Account Manager</h2>
                 </div>
-                <div class="overflow-x-auto">
+                <div class="max-h-80 overflow-auto">
                     <table class="min-w-full divide-y divide-border text-sm">
-                        <thead class="bg-telkom-grey-soft text-left text-xs font-semibold uppercase text-content-secondary">
+                        <thead class="sticky top-0 z-10 bg-telkom-red text-left text-xs font-semibold uppercase text-white">
                             <tr>
                                 <th class="whitespace-nowrap px-4 py-3">Nama</th>
                                 <th class="whitespace-nowrap px-4 py-3">Order</th>

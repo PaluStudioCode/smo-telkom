@@ -49,7 +49,7 @@ const emit = defineEmits(['sort']);
     <div class="overflow-hidden rounded-panel border border-border bg-surface shadow-soft">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-border text-sm">
-                <thead class="bg-telkom-grey-soft text-left text-xs font-semibold uppercase text-content-secondary">
+                <thead class="bg-telkom-red text-left text-xs font-semibold uppercase text-white">
                     <tr>
                         <th
                             v-for="column in columns"

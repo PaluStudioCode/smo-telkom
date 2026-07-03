@@ -21,11 +21,11 @@ const page = usePage();
 const permissions = computed(() => page.props.auth.permissions ?? {});
 
 const itemClass = (active, indented = false) => [
-    'flex h-10 items-center gap-3 rounded-panel px-3 text-sm font-medium transition',
+    'flex h-10 items-center gap-3 rounded-panel px-3 text-sm font-medium transition-all border-l-4',
     indented ? 'pl-8' : '',
     active
-        ? 'bg-primary-soft text-telkom-red'
-        : 'text-content-secondary hover:bg-telkom-grey-soft hover:text-telkom-black',
+        ? 'bg-white text-telkom-red border-white shadow-sm'
+        : 'text-white/80 border-transparent hover:bg-white/10 hover:text-white hover:border-white/50',
 ];
 </script>
 
@@ -40,7 +40,7 @@ const itemClass = (active, indented = false) => [
             <span v-if="!collapsed">Dashboard</span>
         </Link>
 
-        <div class="mt-5 px-3 text-xs font-semibold uppercase text-content-muted">
+        <div class="mt-5 px-3 text-xs font-semibold uppercase text-white/60">
             <span v-if="!collapsed">Monitoring</span>
         </div>
 

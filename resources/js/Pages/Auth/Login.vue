@@ -34,16 +34,18 @@ const submit = () => {
     <GuestLayout>
         <Head title="Login" />
 
-        <div class="rounded-panel border border-border bg-surface p-6 shadow-panel sm:p-8">
-            <div class="mb-8 text-center">
-                <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-panel bg-telkom-red text-lg font-bold text-white">
-                    SMO
-                </div>
-                <h1 class="text-2xl font-semibold text-telkom-black">
-                    Sistem Monitoring Operasional
+        <div class="w-full">
+            <div class="mb-10 text-left">
+                <img
+                    src="/storage/telkom-indonesia-logo.svg"
+                    alt="Telkom Indonesia"
+                    class="mb-8 h-12 w-auto object-contain"
+                />
+                <h1 class="text-3xl font-bold tracking-tight text-telkom-black">
+                    Selamat Datang Kembali
                 </h1>
-                <p class="mt-2 text-sm text-content-secondary">
-                    Divisi Government Service Regional Sulbagteng
+                <p class="mt-2 text-base text-content-secondary">
+                    Silakan masuk ke akun Sistem Monitoring Operasional.
                 </p>
             </div>
 
