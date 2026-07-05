@@ -201,7 +201,10 @@ const confirmDelete = () => {
             updated_at: confirmState.value.record.updated_at_token,
         },
         preserveScroll: true,
-        onFinish: closeConfirm,
+        onFinish: () => {
+            confirmState.value.processing = false;
+            closeConfirm();
+        },
     });
 };
 </script>
@@ -316,7 +319,7 @@ const confirmDelete = () => {
                     <button
                         v-if="canUpdate"
                         type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-content-secondary hover:bg-telkom-grey-soft hover:text-telkom-black"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-content-secondary transition-all hover:bg-telkom-grey-soft hover:text-telkom-black active:scale-95"
                         aria-label="Ubah Order Status"
                         @click="openEdit(row)"
                     >
@@ -325,7 +328,7 @@ const confirmDelete = () => {
                     <button
                         v-if="canDelete"
                         type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-status-danger hover:bg-status-danger-soft"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-status-danger transition-all hover:bg-status-danger-soft active:scale-95"
                         aria-label="Hapus Order Status"
                         @click="askDelete(row)"
                     >
@@ -411,8 +414,9 @@ const confirmDelete = () => {
                     <button type="button" class="h-10 rounded-panel border border-border px-4 text-sm font-medium text-content-secondary hover:bg-telkom-grey-soft" :disabled="form.processing" @click="closeModal">
                         Batal
                     </button>
-                    <button type="submit" class="h-10 rounded-panel bg-telkom-red px-4 text-sm font-semibold text-white hover:bg-telkom-red-dark disabled:opacity-70" :disabled="form.processing">
-                        Simpan
+                    <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-panel bg-telkom-red px-4 text-sm font-semibold text-white transition-all hover:bg-telkom-red-dark active:scale-95 disabled:pointer-events-none disabled:opacity-70" :disabled="form.processing">
+                        <svg v-if="form.processing" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        {{ form.processing ? 'Menyimpan...' : 'Simpan' }}
                     </button>
                 </div>
             </form>

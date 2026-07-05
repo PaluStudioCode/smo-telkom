@@ -38,6 +38,7 @@ const confirmState = ref({
     show: false,
     user: null,
     type: '',
+    processing: false,
 });
 
 const filterForm = ref({ ...props.filters });
@@ -148,6 +149,7 @@ const askToggle = (user) => {
         show: true,
         user,
         type: 'toggle',
+        processing: false,
     };
 };
 
@@ -156,31 +158,40 @@ const askDelete = (user) => {
         show: true,
         user,
         type: 'delete',
+        processing: false,
     };
 };
 
 const closeConfirm = () => {
-    if (form.processing) return;
-    confirmState.value = { show: false, user: null, type: '' };
+    if (confirmState.value.processing) return;
+    confirmState.value = { show: false, user: null, type: '', processing: false };
 };
 
 const confirmAction = () => {
     const { user, type } = confirmState.value;
     if (!user) return;
 
+    confirmState.value.processing = true;
+
     if (type === 'toggle') {
         router.patch(route('users.toggle-active', user.id), {
             is_active: !user.is_active,
         }, {
             preserveScroll: true,
-            onFinish: closeConfirm,
+            onFinish: () => {
+                confirmState.value.processing = false;
+                closeConfirm();
+            },
         });
         return;
     }
 
     router.delete(route('users.destroy', user.id), {
         preserveScroll: true,
-        onFinish: closeConfirm,
+        onFinish: () => {
+            confirmState.value.processing = false;
+            closeConfirm();
+        },
     });
 };
 
@@ -287,7 +298,7 @@ const roleBadgeVariant = (role) => ({
                 <div class="flex justify-end gap-1">
                     <button
                         type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-content-secondary hover:bg-telkom-grey-soft hover:text-telkom-black"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-content-secondary transition-all hover:bg-telkom-grey-soft hover:text-telkom-black active:scale-95"
                         aria-label="Ubah pengguna"
                         @click="openEdit(row)"
                     >
@@ -295,7 +306,7 @@ const roleBadgeVariant = (role) => ({
                     </button>
                     <button
                         type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-content-secondary hover:bg-telkom-grey-soft hover:text-telkom-black disabled:cursor-not-allowed disabled:opacity-40"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-content-secondary transition-all hover:bg-telkom-grey-soft hover:text-telkom-black active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
                         :disabled="row.id === currentUser.id"
                         :aria-label="row.is_active ? 'Nonaktifkan akun' : 'Aktifkan akun'"
                         @click="askToggle(row)"
@@ -304,7 +315,7 @@ const roleBadgeVariant = (role) => ({
                     </button>
                     <button
                         type="button"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-status-danger hover:bg-status-danger-soft disabled:cursor-not-allowed disabled:opacity-40"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-panel text-status-danger transition-all hover:bg-status-danger-soft active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
                         :disabled="row.id === currentUser.id"
                         aria-label="Hapus pengguna"
                         @click="askDelete(row)"
@@ -405,10 +416,11 @@ const roleBadgeVariant = (role) => ({
                     </button>
                     <button
                         type="submit"
-                        class="h-10 rounded-panel bg-telkom-red px-4 text-sm font-semibold text-white hover:bg-telkom-red-dark disabled:opacity-70"
+                        class="inline-flex h-10 items-center gap-2 rounded-panel bg-telkom-red px-4 text-sm font-semibold text-white transition-all hover:bg-telkom-red-dark active:scale-95 disabled:pointer-events-none disabled:opacity-70"
                         :disabled="form.processing"
                     >
-                        Simpan
+                        <svg v-if="form.processing" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        {{ form.processing ? 'Menyimpan...' : 'Simpan' }}
                     </button>
                 </div>
             </form>
@@ -422,6 +434,7 @@ const roleBadgeVariant = (role) => ({
                 : 'Status aktif pengguna akan diperbarui.'"
             :confirm-label="confirmState.type === 'delete' ? 'Hapus' : 'Simpan'"
             :destructive="confirmState.type === 'delete'"
+            :processing="confirmState.processing"
             @close="closeConfirm"
             @confirm="confirmAction"
         />

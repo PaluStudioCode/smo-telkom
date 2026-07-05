@@ -238,7 +238,10 @@ const confirmDelete = () => {
             updated_at: confirmState.value.record.updated_at_token,
         },
         preserveScroll: true,
-        onFinish: closeConfirm,
+        onFinish: () => {
+            confirmState.value.processing = false;
+            closeConfirm();
+        },
     });
 };
 
@@ -389,7 +392,7 @@ const submitApproval = () => {
                         <template #content>
                             <button
                                 type="button"
-                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black hover:bg-telkom-grey-soft"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black transition-all hover:bg-telkom-grey-soft active:bg-telkom-grey active:scale-[0.98]"
                                 @click="openDetail(row)"
                             >
                                 <Eye class="h-4 w-4 text-content-muted" />
@@ -398,7 +401,7 @@ const submitApproval = () => {
                             <button
                                 v-if="canUpdate"
                                 type="button"
-                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black hover:bg-telkom-grey-soft"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black transition-all hover:bg-telkom-grey-soft active:bg-telkom-grey active:scale-[0.98]"
                                 @click="openEdit(row)"
                             >
                                 <Pencil class="h-4 w-4 text-content-muted" />
@@ -407,7 +410,7 @@ const submitApproval = () => {
                             <button
                                 v-if="canApprove"
                                 type="button"
-                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black hover:bg-telkom-grey-soft"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black transition-all hover:bg-telkom-grey-soft active:bg-telkom-grey active:scale-[0.98]"
                                 @click="openApproval(row, 'disetujui')"
                             >
                                 <Check class="h-4 w-4 text-status-success" />
@@ -416,7 +419,7 @@ const submitApproval = () => {
                             <button
                                 v-if="canApprove"
                                 type="button"
-                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black hover:bg-telkom-grey-soft"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black transition-all hover:bg-telkom-grey-soft active:bg-telkom-grey active:scale-[0.98]"
                                 @click="openApproval(row, 'tidak_disetujui')"
                             >
                                 <X class="h-4 w-4 text-status-danger" />
@@ -425,7 +428,7 @@ const submitApproval = () => {
                             <button
                                 v-if="canApprove"
                                 type="button"
-                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black hover:bg-telkom-grey-soft"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-telkom-black transition-all hover:bg-telkom-grey-soft active:bg-telkom-grey active:scale-[0.98]"
                                 @click="openApproval(row, 'revisi')"
                             >
                                 <RotateCcw class="h-4 w-4 text-status-warning" />
@@ -434,7 +437,7 @@ const submitApproval = () => {
                             <button
                                 v-if="canDelete"
                                 type="button"
-                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-status-danger hover:bg-status-danger-soft"
+                                class="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-status-danger transition-all hover:bg-status-danger-soft active:bg-status-danger/20 active:scale-[0.98]"
                                 @click="askDelete(row)"
                             >
                                 <Trash2 class="h-4 w-4" />
@@ -524,8 +527,9 @@ const submitApproval = () => {
                     <button type="button" class="h-10 rounded-panel border border-border px-4 text-sm font-medium text-content-secondary hover:bg-telkom-grey-soft" :disabled="form.processing" @click="closeModal">
                         Batal
                     </button>
-                    <button type="submit" class="h-10 rounded-panel bg-telkom-red px-4 text-sm font-semibold text-white hover:bg-telkom-red-dark disabled:opacity-70" :disabled="form.processing">
-                        Simpan
+                    <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-panel bg-telkom-red px-4 text-sm font-semibold text-white transition-all hover:bg-telkom-red-dark active:scale-95 disabled:pointer-events-none disabled:opacity-70" :disabled="form.processing">
+                        <svg v-if="form.processing" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        {{ form.processing ? 'Menyimpan...' : 'Simpan' }}
                     </button>
                 </div>
             </form>
@@ -555,8 +559,9 @@ const submitApproval = () => {
                     <button type="button" class="h-10 rounded-panel border border-border px-4 text-sm font-medium text-content-secondary hover:bg-telkom-grey-soft" :disabled="approvalForm.processing" @click="closeApproval">
                         Batal
                     </button>
-                    <button type="submit" class="h-10 rounded-panel bg-telkom-red px-4 text-sm font-semibold text-white hover:bg-telkom-red-dark disabled:opacity-70" :disabled="approvalForm.processing">
-                        Simpan
+                    <button type="submit" class="inline-flex h-10 items-center gap-2 rounded-panel bg-telkom-red px-4 text-sm font-semibold text-white transition-all hover:bg-telkom-red-dark active:scale-95 disabled:pointer-events-none disabled:opacity-70" :disabled="approvalForm.processing">
+                        <svg v-if="approvalForm.processing" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        {{ approvalForm.processing ? 'Menyimpan...' : 'Simpan' }}
                     </button>
                 </div>
             </form>
