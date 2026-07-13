@@ -1,19 +1,36 @@
+<!--
+  Komponen: AuthLayout.vue
+  Deskripsi: Layout untuk halaman-halaman autentikasi (login, register, lupa password, dll).
+             Menampilkan tata letak dua kolom: sisi kiri berisi branding Telkom dengan visual animasi jaringan,
+             dan sisi kanan berisi formulir autentikasi.
+             Layout ini hanya menampilkan template tanpa script karena tidak memerlukan logika tambahan.
+  Digunakan oleh: GuestLayout.vue sebagai wrapper untuk halaman-halaman tamu (guest).
+-->
 <template>
+    <!-- Container utama - layout dua kolom yang mengisi seluruh tinggi layar -->
     <div class="flex min-h-screen bg-surface">
-        <!-- Left Side: Branding / Imagery -->
+        <!-- ==================== SISI KIRI: BRANDING & VISUAL ==================== -->
+        <!-- Panel branding hanya tampil di layar besar (lg+), mengisi setengah lebar layar -->
+        <!-- Menggunakan warna dasar merah Telkom sebagai background -->
         <div class="hidden lg:flex lg:w-1/2 relative bg-telkom-red overflow-hidden flex-col justify-between p-12 lg:p-24">
             
+            <!-- Gambar latar belakang & overlay gradien untuk efek visual yang menarik -->
             <!-- Background Image & Overlay -->
             <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center opacity-40 z-0"></div>
+            <!-- Overlay gradien dari merah gelap ke merah - memberikan efek visual berlapis -->
             <div class="absolute inset-0 bg-gradient-to-br from-telkom-red-dark/95 to-telkom-red/80 z-0 mix-blend-multiply"></div>
             
+            <!-- Elemen dekoratif cahaya ambient - lingkaran blur untuk efek pencahayaan lembut -->
             <!-- Floating Decorative Ambient Lighting -->
             <div class="absolute top-1/4 right-0 w-72 h-72 bg-white/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
             <div class="absolute bottom-1/4 left-10 w-64 h-64 bg-black/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
 
+            <!-- ==================== VISUAL JARINGAN ANIMASI (SVG) ==================== -->
+            <!-- Animasi SVG yang menggambarkan jaringan/network untuk merepresentasikan sistem monitoring -->
             <!-- Animated Network Visual (SVG) -->
             <div class="absolute inset-0 z-0 pointer-events-none opacity-70">
                 <svg viewBox="0 0 800 800" class="w-full h-full" preserveAspectRatio="xMidYMid slice">
+                    <!-- Definisi filter SVG untuk efek glow (cahaya) pada elemen jaringan -->
                     <defs>
                         <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -24,6 +41,7 @@
                         </filter>
                     </defs>
                     
+                    <!-- Garis koneksi jaringan - menghubungkan node-node dalam visualisasi -->
                     <!-- Network Connections -->
                     <g stroke="rgba(255,255,255,0.15)" stroke-width="1.5">
                         <line x1="100" y1="200" x2="300" y2="150" />
@@ -36,6 +54,8 @@
                         <line x1="100" y1="500" x2="250" y2="400" />
                     </g>
                     
+                    <!-- Paket data animasi - garis terang bergerak sepanjang koneksi untuk -->
+                    <!-- mensimulasikan aliran data dalam jaringan -->
                     <!-- Animated Data Packets -->
                     <g stroke="rgba(255,255,255,0.8)" stroke-width="2" filter="url(#glow)">
                         <line x1="100" y1="200" x2="300" y2="150" stroke-dasharray="15 300" stroke-dashoffset="0">
@@ -52,6 +72,8 @@
                         </line>
                     </g>
                     
+                    <!-- Node-node jaringan - titik-titik yang merepresentasikan perangkat/server -->
+                    <!-- Beberapa node memiliki animasi ukuran (pulsing) untuk efek visual dinamis -->
                     <!-- Network Nodes -->
                     <g fill="rgba(255,255,255,1)">
                         <circle cx="100" cy="200" r="4" filter="url(#glow)" />
@@ -69,6 +91,7 @@
                         <circle cx="400" cy="600" r="6" filter="url(#glow)" />
                         <circle cx="100" cy="500" r="4" filter="url(#glow)" />
                         
+                        <!-- Cincin berdenyut (pulsing rings) - efek sinyal yang memancar dari node utama -->
                         <!-- Pulsing Rings (Signal effect) -->
                         <circle cx="500" cy="250" r="7" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1">
                             <animate attributeName="r" values="7;30" dur="2.5s" repeatCount="indefinite" />
@@ -82,8 +105,10 @@
                 </svg>
             </div>
 
+            <!-- ==================== BAGIAN ATAS: LOGO ==================== -->
             <!-- Top: Logo -->
             <div class="relative z-10">
+                <!-- Logo Telkom Indonesia dalam mode putih (brightness-0 invert) -->
                 <img
                     src="/storage/telkom-indonesia-logo.svg"
                     alt="Telkom Indonesia"
@@ -91,8 +116,11 @@
                 />
             </div>
 
+            <!-- ==================== BAGIAN TENGAH: KONTEN UTAMA BRANDING ==================== -->
             <!-- Middle: Main Content with Visual Elements -->
             <div class="relative z-10 my-auto pt-12">
+                <!-- Badge status sistem - menampilkan indikator bahwa sistem aktif dan terhubung -->
+                <!-- Titik hijau dengan animasi ping menandakan koneksi aktif -->
                 <!-- Status Badge -->
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-white/90 text-sm font-medium mb-6 backdrop-blur-md shadow-sm">
                     <span class="flex h-2 w-2 rounded-full bg-green-400 relative">
@@ -101,9 +129,11 @@
                     Sistem Aktif & Terhubung
                 </div>
                 
+                <!-- Judul utama halaman autentikasi -->
                 <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight mb-5 leading-tight text-white">
                     Sistem Monitoring Operasional
                 </h2>
+                <!-- Deskripsi singkat tentang fungsi sistem -->
                 <p class="text-lg text-white/80 max-w-md font-medium leading-relaxed mb-10">
                     Pantau kinerja infrastruktur dan kelola operasional dengan lebih cepat, presisi, dan terintegrasi penuh.
                 </p>
@@ -111,15 +141,21 @@
                 <!-- Animated Network Visual has been moved to the background -->
             </div>
 
+            <!-- ==================== BAGIAN BAWAH: FOOTER ==================== -->
             <!-- Bottom: Footer -->
+            <!-- Menampilkan hak cipta dengan tahun yang otomatis diperbarui -->
             <div class="relative z-10 text-white/60 text-sm mt-8">
                 &copy; {{ new Date().getFullYear() }} Divisi Government Service Regional Sulbagteng.
             </div>
         </div>
 
+        <!-- ==================== SISI KANAN: FORMULIR AUTENTIKASI ==================== -->
+        <!-- Area formulir autentikasi - mengisi seluruh lebar di mobile, setengah lebar di desktop -->
         <!-- Right Side: Auth Form -->
         <div class="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 sm:px-12 lg:px-24">
+            <!-- Container formulir dengan lebar maksimum untuk keterbacaan optimal -->
             <div class="w-full max-w-md">
+                <!-- Slot default untuk merender konten formulir (login/register/dll) -->
                 <slot />
             </div>
         </div>

@@ -15,6 +15,10 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
+    /**
+     * Method ini digunakan untuk menampilkan daftar pengguna.
+     * Menerima Request untuk keperluan filtering (pencarian, peran, status), sorting, dan pagination.
+     */
     public function index(Request $request): Response
     {
         Gate::authorize('user.view');
@@ -65,6 +69,10 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Method untuk menyimpan data pengguna baru ke database.
+     * StoreUserRequest digunakan untuk memvalidasi input secara otomatis sebelum kode di method ini dijalankan.
+     */
     public function store(StoreUserRequest $request): RedirectResponse
     {
         Gate::authorize('user.create');
@@ -77,6 +85,10 @@ class UserController extends Controller
         return back()->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
+    /**
+     * Method untuk memperbarui data pengguna yang sudah ada.
+     * UpdateUserRequest melakukan validasi khusus saat pembaruan (misal: mengabaikan email yang sama milik user ini).
+     */
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
         Gate::authorize('user.update');
@@ -115,6 +127,9 @@ class UserController extends Controller
             : 'Akun pengguna berhasil dinonaktifkan.');
     }
 
+    /**
+     * Method untuk menghapus data pengguna dari database.
+     */
     public function destroy(Request $request, User $user): RedirectResponse
     {
         Gate::authorize('user.delete');

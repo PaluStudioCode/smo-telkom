@@ -8,19 +8,28 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+// Rute default aplikasi
+// Mengecek apakah pengguna sudah login (auth()->check())
+// Jika sudah, arahkan (redirect) ke halaman dashboard, jika belum arahkan ke halaman login
 Route::get('/', function () {
     return auth()->check()
         ? redirect()->route('dashboard')
         : redirect()->route('login');
 });
 
+// Rute untuk halaman Dashboard
+// Middleware 'auth' dan 'verified' memastikan hanya pengguna yang login dan terverifikasi yang bisa mengaksesnya
 Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
+// Mengelompokkan rute-rute yang mewajibkan pengguna untuk login (auth)
 Route::middleware('auth')->group(function () {
+    // Rute untuk mengelola profil pengguna (menampilkan, memperbarui, dan menghapus profil)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::match(['patch', 'post'], '/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Mengelompokkan rute untuk fitur Status Pesanan
+    // Middleware 'can:order_status.view' menggunakan Gate (otorisasi) untuk memastikan hanya peran tertentu yang bisa mengakses
     Route::middleware('can:order_status.view')->group(function () {
         Route::get('/order-statuses', [OrderStatusController::class, 'index'])->name('order-statuses.index');
         Route::post('/order-statuses', [OrderStatusController::class, 'store'])->name('order-statuses.store');
